@@ -66,5 +66,27 @@ namespace Shortener_Cat.Controllers
                 });
             }
         }
+
+        [HttpPost]
+        [Route("sginin")]
+        public async Task<IActionResult> Signin(SigninDto dto)
+        {
+            var user = await _userManager.FindByEmailAsync(dto.Email);
+            if (user != null)
+            {
+                bool result = await _userManager.CheckPasswordAsync(user, dto.Password);
+                if (result)
+                {
+                    string token = _jwtService.GenerateJwtToken(user);
+
+                    return Ok(new
+                    {
+                        Token = token,
+                    });
+                }
+            }
+
+            return Unauthorized("Invalid Credentials.");
+        }
     }
 }
