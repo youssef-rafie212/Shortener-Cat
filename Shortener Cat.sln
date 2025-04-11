@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35913.81 d17.13
+VisualStudioVersion = 17.13.35913.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shortener Cat", "Shortener Cat\Shortener Cat.csproj", "{F91D2ACF-C3F2-447E-B221-04023C728DE5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{8E5F3E61-6C39-44DF-AA8F-3CFE674581E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{9A9E5D16-C2A2-4B14-B082-82228797903D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{F91D2ACF-C3F2-447E-B221-04023C728DE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F91D2ACF-C3F2-447E-B221-04023C728DE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F91D2ACF-C3F2-447E-B221-04023C728DE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E5F3E61-6C39-44DF-AA8F-3CFE674581E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E5F3E61-6C39-44DF-AA8F-3CFE674581E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E5F3E61-6C39-44DF-AA8F-3CFE674581E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E5F3E61-6C39-44DF-AA8F-3CFE674581E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A9E5D16-C2A2-4B14-B082-82228797903D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A9E5D16-C2A2-4B14-B082-82228797903D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A9E5D16-C2A2-4B14-B082-82228797903D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A9E5D16-C2A2-4B14-B082-82228797903D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
