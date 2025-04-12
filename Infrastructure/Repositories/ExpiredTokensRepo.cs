@@ -18,5 +18,11 @@ namespace Infrastructure.Repositories
             _db.ExpiredTokens.Add(token);
             await _db.SaveChangesAsync();
         }
+
+        public bool HasOne(string token)
+        {
+            ExpiredToken? t = _db.ExpiredTokens.FirstOrDefault(t => t.Value == token);
+            return t != null;
+        }
     }
 }

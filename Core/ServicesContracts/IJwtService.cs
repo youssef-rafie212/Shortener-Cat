@@ -6,5 +6,6 @@ namespace Core.ServicesContracts
     {
         string GenerateJwtToken(ApplicationUser user);
         Task ExpireToken(string token);
+        bool IsExpired(string token);
     }
 }

@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Domain.Entities
 {
-    // defines the stored short url generated from the original one.
     public class ShortUrl
     {
         [Key]

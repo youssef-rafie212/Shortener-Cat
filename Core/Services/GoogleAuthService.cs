@@ -15,7 +15,7 @@ namespace Core.Services
 
         public async Task<GoogleJsonWebSignature.Payload?> VerifyToken(string token)
         {
-            string clientId = _config["Auth:Google:Client"]!;
+            string clientId = _config["scl"]!;
             var settings = new GoogleJsonWebSignature.ValidationSettings()
             {
                 Audience = [clientId]

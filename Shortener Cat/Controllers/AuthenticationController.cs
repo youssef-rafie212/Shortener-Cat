@@ -4,6 +4,7 @@ using Core.ServicesContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Shortener_Cat.Filters;
 
 namespace Shortener_Cat.Controllers
 {
@@ -93,8 +94,8 @@ namespace Shortener_Cat.Controllers
 
         [HttpPost]
         [Route("signout")]
+        [ServiceFilter(typeof(BlackListTokenFilter))]
         [Authorize]
-        // TODO: implement expired token filter
         public async Task<IActionResult> Signout()
         {
             string auth = HttpContext.Request.Headers.Authorization.ToString();
@@ -105,5 +106,6 @@ namespace Shortener_Cat.Controllers
 
             return Ok();
         }
+
     }
 }

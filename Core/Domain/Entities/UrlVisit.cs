@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Domain.Entities
 {
-    // Defines data about a url visit.
     public class UrlVisit
     {
         [Key]

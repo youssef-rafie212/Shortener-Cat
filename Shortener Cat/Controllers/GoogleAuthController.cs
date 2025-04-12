@@ -1,8 +1,10 @@
 ﻿using Core.Domain.Entities;
 using Core.DTO;
 using Core.ServicesContracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Shortener_Cat.Filters;
 
 namespace Shortener_Cat.Controllers
 {
@@ -51,6 +53,21 @@ namespace Shortener_Cat.Controllers
             ApplicationUser userFromDb = (await _userManager.FindByEmailAsync(payload.Email))!;
             string token = _jwtService.GenerateJwtToken(userFromDb);
             return Ok(token);
+        }
+
+        [HttpPost]
+        [Route("signout")]
+        [ServiceFilter(typeof(BlackListTokenFilter))]
+        [Authorize]
+        public async Task<IActionResult> Signout()
+        {
+            string auth = HttpContext.Request.Headers.Authorization.ToString();
+
+            string token = auth.Substring("Bearer ".Length).Trim();
+
+            await _jwtService.ExpireToken(token);
+
+            return Ok();
         }
     }
 }

@@ -63,5 +63,10 @@ namespace Core.Services
 
             return handler.WriteToken(token);
         }
+
+        public bool IsExpired(string token)
+        {
+            return _expiredRepo.HasOne(token);
+        }
     }
 }

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Shortener_Cat.Filters;
 using System.Text;
 
 namespace Shortener_Cat
@@ -92,6 +93,15 @@ namespace Shortener_Cat
             builder.Services.AddScoped<IJwtService, JwtService>();
             builder.Services.AddScoped<IExpiredTokensRepo, ExpiredTokensRepo>();
             builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
+            builder.Services.AddScoped<BlackListTokenFilter>();
+
+            builder.Services.Configure<IdentityOptions>(opt =>
+            {
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequireUppercase = false;
+
+                opt.User.RequireUniqueEmail = true;
+            });
 
             var app = builder.Build();
 
