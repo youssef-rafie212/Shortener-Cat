@@ -15,12 +15,14 @@ namespace Shortener_Cat.Controllers
         private readonly IGoogleAuthService _authService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IJwtService _jwtService;
+        private readonly ILogger<GoogleAuthController> _logger;
 
-        public GoogleAuthController(IGoogleAuthService authService, UserManager<ApplicationUser> userManager, IJwtService jwtService)
+        public GoogleAuthController(IGoogleAuthService authService, UserManager<ApplicationUser> userManager, IJwtService jwtService, ILogger<GoogleAuthController> logger)
         {
             _authService = authService;
             _userManager = userManager;
             _jwtService = jwtService;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -30,6 +32,7 @@ namespace Shortener_Cat.Controllers
             var payload = await _authService.VerifyToken(dto.Token);
             if (payload == null)
             {
+                _logger.LogWarning($"Unsuccessful user google sign in with the token: {dto.Token}");
                 return Unauthorized("Invalid Token");
             }
 
@@ -43,15 +46,20 @@ namespace Shortener_Cat.Controllers
                     EmailConfirmed = true,
                 };
 
-                var res = await _userManager.CreateAsync(newUser);
-                if (!res.Succeeded)
+                var creationRes = await _userManager.CreateAsync(newUser);
+                var roleRes = await _userManager.AddToRoleAsync(newUser, "User");
+                if (!creationRes.Succeeded || !roleRes.Succeeded)
                 {
-                    return BadRequest(res.Errors);
+                    _logger.LogWarning($"Unsuccessful user google sign in creation with the Username: {newUser.UserName}");
+                    return BadRequest();
                 }
             }
 
             ApplicationUser userFromDb = (await _userManager.FindByEmailAsync(payload.Email))!;
             string token = _jwtService.GenerateJwtToken(userFromDb);
+
+            _logger.LogInformation($"Successful user google sign in with the token: {dto.Token}");
+
             return Ok(token);
         }
 
@@ -66,6 +74,8 @@ namespace Shortener_Cat.Controllers
             string token = auth.Substring("Bearer ".Length).Trim();
 
             await _jwtService.ExpireToken(token);
+
+            _logger.LogInformation($"Successful jwt token expiration with the value: {token}");
 
             return Ok();
         }

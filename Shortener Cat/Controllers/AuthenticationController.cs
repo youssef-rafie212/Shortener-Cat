@@ -15,16 +15,19 @@ namespace Shortener_Cat.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IJwtService _jwtService;
+        private readonly ILogger<AuthenticationController> _logger;
 
         public AuthenticationController(
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
-            IJwtService jwtService
+            IJwtService jwtService,
+            ILogger<AuthenticationController> logger
             )
         {
             _roleManager = roleManager;
             _userManager = userManager;
             _jwtService = jwtService;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -49,6 +52,8 @@ namespace Shortener_Cat.Controllers
                 await _userManager.AddToRoleAsync(user, "User");
                 string token = _jwtService.GenerateJwtToken(user);
 
+                _logger.LogInformation($"Successful creation of a user with the Username: {user.UserName}");
+
                 return Ok(new
                 {
                     Token = token,
@@ -61,6 +66,8 @@ namespace Shortener_Cat.Controllers
                 {
                     errors.Add(err.Description);
                 }
+
+                _logger.LogWarning($"Unsuccessful creation of a user with the Username: {user.UserName}");
 
                 return BadRequest(new
                 {
@@ -82,12 +89,16 @@ namespace Shortener_Cat.Controllers
                 {
                     string token = _jwtService.GenerateJwtToken(user);
 
+                    _logger.LogInformation($"Successful user sign in with the Username: {user.UserName}");
+
                     return Ok(new
                     {
                         Token = token,
                     });
                 }
             }
+
+            _logger.LogWarning($"Unuccessful user sign in with the Username: {user.UserName}");
 
             return Unauthorized("Invalid Credentials.");
         }
@@ -103,6 +114,7 @@ namespace Shortener_Cat.Controllers
             string token = auth.Substring("Bearer ".Length).Trim();
 
             await _jwtService.ExpireToken(token);
+            _logger.LogInformation($"Successful jwt token expiration with the value: {token}");
 
             return Ok();
         }

@@ -1,4 +1,3 @@
-
 using Core.Domain.Entities;
 using Core.Domain.RepositoryContracts;
 using Core.Services;
@@ -9,6 +8,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
+using Serilog.Extensions.Logging;
 using Shortener_Cat.Filters;
 using System.Text;
 
@@ -19,6 +20,11 @@ namespace Shortener_Cat
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            // Serilog
+            Log.Logger = new LoggerConfiguration().WriteTo.File("Logs/log.txt").CreateLogger();
+            builder.Logging.ClearProviders();
+            builder.Logging.AddProvider(new SerilogLoggerProvider(Log.Logger));
 
             // DB
             string dbConnection = builder.Configuration.GetConnectionString("DefaultConnection")!;
