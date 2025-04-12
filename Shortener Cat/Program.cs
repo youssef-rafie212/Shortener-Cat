@@ -1,8 +1,10 @@
 
 using Core.Domain.Entities;
+using Core.Domain.RepositoryContracts;
 using Core.Services;
 using Core.ServicesContracts;
 using Infrastructure.DB;
+using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -59,10 +61,37 @@ namespace Shortener_Cat
                     Description = "API for Shortener Cat, a URL shortener app and website.",
                     Version = "v1"
                 });
+
+                opts.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                    Description = "Enter your JWT token."
+                });
+
+                opts.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+                {
+                    {
+                        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                        {
+                            Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                            {
+                                Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
             });
 
             // Custom
             builder.Services.AddScoped<IJwtService, JwtService>();
+            builder.Services.AddScoped<IExpiredTokensRepo, ExpiredTokensRepo>();
+            builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
 
             var app = builder.Build();
 

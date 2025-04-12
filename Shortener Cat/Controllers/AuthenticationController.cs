@@ -1,6 +1,7 @@
 ﻿using Core.Domain.Entities;
 using Core.DTO;
 using Core.ServicesContracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -71,6 +72,7 @@ namespace Shortener_Cat.Controllers
         [Route("sginin")]
         public async Task<IActionResult> Signin(SigninDto dto)
         {
+            //TODO: use sign in manager
             var user = await _userManager.FindByEmailAsync(dto.Email);
             if (user != null)
             {
@@ -87,6 +89,21 @@ namespace Shortener_Cat.Controllers
             }
 
             return Unauthorized("Invalid Credentials.");
+        }
+
+        [HttpPost]
+        [Route("signout")]
+        [Authorize]
+        // TODO: implement expired token filter
+        public async Task<IActionResult> Signout()
+        {
+            string auth = HttpContext.Request.Headers.Authorization.ToString();
+
+            string token = auth.Substring("Bearer ".Length).Trim();
+
+            await _jwtService.ExpireToken(token);
+
+            return Ok();
         }
     }
 }

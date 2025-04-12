@@ -10,6 +10,7 @@ namespace Infrastructure.DB
 
         public DbSet<ShortUrl> ShortUrls { get; set; }
         public DbSet<UrlVisit> UrlVisits { get; set; }
+        public DbSet<ExpiredToken> ExpiredTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

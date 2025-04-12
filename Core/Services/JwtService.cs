@@ -1,4 +1,5 @@
 ﻿using Core.Domain.Entities;
+using Core.Domain.RepositoryContracts;
 using Core.ServicesContracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -13,11 +14,18 @@ namespace Core.Services
     {
         private readonly IConfiguration _config;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IExpiredTokensRepo _expiredRepo;
 
-        public JwtService(IConfiguration config, UserManager<ApplicationUser> userManager)
+        public JwtService(IConfiguration config, UserManager<ApplicationUser> userManager, IExpiredTokensRepo expiredTokensRepo)
         {
             _config = config;
             _userManager = userManager;
+            _expiredRepo = expiredTokensRepo;
+        }
+
+        public async Task ExpireToken(string token)
+        {
+            await _expiredRepo.AddOne(new() { Value = token });
         }
 
         public string GenerateJwtToken(ApplicationUser user)
@@ -44,7 +52,9 @@ namespace Core.Services
             {
                 Expires = DateTime.UtcNow.AddDays(7),
                 Subject = new ClaimsIdentity(claims),
-                SigningCredentials = credentials
+                SigningCredentials = credentials,
+                Audience = jwtConfig["Aud"],
+                Issuer = jwtConfig["Issuer"]
             };
 
             var handler = new JwtSecurityTokenHandler();
