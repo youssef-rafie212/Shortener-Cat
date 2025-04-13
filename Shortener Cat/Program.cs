@@ -6,6 +6,7 @@ using Infrastructure.DB;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -58,16 +59,34 @@ namespace Shortener_Cat
                 };
             });
 
+            // API versioning
+            builder.Services.AddApiVersioning(opt =>
+            {
+                opt.ApiVersionReader = new UrlSegmentApiVersionReader();
+                opt.DefaultApiVersion = new(1, 0);
+                opt.AssumeDefaultVersionWhenUnspecified = true;
+            });
+
             // Swagger
-            builder.Services.AddEndpointsApiExplorer();
+            //builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddVersionedApiExplorer(opt =>
+            {
+                opt.GroupNameFormat = "'v'VVV";
+                opt.SubstituteApiVersionInUrl = true;
+            });
             builder.Services.AddSwaggerGen(opts =>
             {
-                opts.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo()
+                string[] versions = ["v1"];
+
+                foreach (string version in versions)
                 {
-                    Title = "Shortener Cat API Documentation",
-                    Description = "API for Shortener Cat, a URL shortener app and website.",
-                    Version = "v1"
-                });
+                    opts.SwaggerDoc(version, new Microsoft.OpenApi.Models.OpenApiInfo()
+                    {
+                        Title = "Shortener Cat API Documentation",
+                        Description = "API for Shortener Cat, a URL shortener app and website.",
+                        Version = version
+                    });
+                }
 
                 opts.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
                 {
@@ -111,12 +130,13 @@ namespace Shortener_Cat
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+
+            app.UseSwagger();
+            app.UseSwaggerUI(opt =>
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+                opt.SwaggerEndpoint("v1/swagger.json", "1.0");
+            });
+
 
             app.UseHttpsRedirection();
 

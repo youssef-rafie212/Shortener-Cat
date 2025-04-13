@@ -6,11 +6,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Shortener_Cat.Filters;
 
-namespace Shortener_Cat.Controllers
+namespace Shortener_Cat.Controllers.v1
 {
-    [ApiController]
-    [Route("api/v1/[controller]")]
-    public class AuthenticationController : ControllerBase
+    [ApiVersion("1.0")]
+    public class AuthenticationController : AppBaseController
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
@@ -77,10 +76,9 @@ namespace Shortener_Cat.Controllers
         }
 
         [HttpPost]
-        [Route("sginin")]
+        [Route("signin")]
         public async Task<IActionResult> Signin(SigninDto dto)
         {
-            //TODO: use sign in manager
             var user = await _userManager.FindByEmailAsync(dto.Email);
             if (user != null)
             {
@@ -98,7 +96,7 @@ namespace Shortener_Cat.Controllers
                 }
             }
 
-            _logger.LogWarning($"Unuccessful user sign in with the Username: {user.UserName}");
+            _logger.LogWarning($"Unuccessful user sign in with the email: {dto.Email}");
 
             return Unauthorized("Invalid Credentials.");
         }

@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Shortener_Cat.Filters;
 
-namespace Shortener_Cat.Controllers
+namespace Shortener_Cat.Controllers.v1
 {
-    [Route("api/v1/google-auth")]
-    [ApiController]
-    public class GoogleAuthController : ControllerBase
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/google-auth")]
+    public class GoogleAuthController : AppBaseController
     {
         private readonly IGoogleAuthService _authService;
         private readonly UserManager<ApplicationUser> _userManager;
