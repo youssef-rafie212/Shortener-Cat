@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Shortener_Cat.Filters;
+using System.Security.Claims;
 
 namespace Shortener_Cat.Controllers.v1
 {
@@ -117,5 +118,76 @@ namespace Shortener_Cat.Controllers.v1
             return Ok();
         }
 
+        [HttpGet]
+        [Route("email-confirm-token")]
+        [ServiceFilter(typeof(BlackListTokenFilter))]
+        [Authorize]
+        public async Task<IActionResult> GetConfirmToken()
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            ApplicationUser? user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return Unauthorized();
+
+            string token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            _logger.LogInformation($"Successfully generated email confirmation token for user with username: {user.UserName}");
+
+            return Ok(new { Token = token });
+        }
+
+        [HttpPost]
+        [Route("confirm-email")]
+        [ServiceFilter(typeof(BlackListTokenFilter))]
+        [Authorize]
+        public async Task<IActionResult> ConfirmEmail(ConfirmEmailDto dto)
+        {
+            string userId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;
+            ApplicationUser? user = await _userManager.FindByIdAsync(userId);
+            if (user == null) return Unauthorized();
+
+            var res = await _userManager.ConfirmEmailAsync(user, dto.Token);
+
+            if (!res.Succeeded)
+            {
+                _logger.LogWarning($"unsuccessful email confirmation for user with username: {user.UserName}");
+                return BadRequest(res.Errors);
+            }
+
+            _logger.LogInformation($"Successful email confirmation for user with username: {user.UserName}");
+            return Ok("Email confirmed successfully");
+        }
+
+        [HttpPost]
+        [Route("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto dto)
+        {
+            if (!int.TryParse(dto.UserId, out int _)) return BadRequest("ID must be in the form of an integer");
+            ApplicationUser? user = await _userManager.FindByIdAsync(dto.UserId);
+            if (user == null) return BadRequest("User not found");
+
+            string token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            _logger.LogInformation($"Successfully generated password reset token for user with username: {user.UserName}");
+
+            return Ok(new { Token = token });
+        }
+
+        [HttpPost]
+        [Route("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto dto)
+        {
+            if (!int.TryParse(dto.UserId, out int _)) return BadRequest("ID must be in the form of an integer");
+            ApplicationUser? user = await _userManager.FindByIdAsync(dto.UserId);
+            if (user == null) return BadRequest("User not found");
+
+            var res = await _userManager.ResetPasswordAsync(user, dto.Token, dto.NewPassword);
+
+            if (!res.Succeeded)
+            {
+                _logger.LogWarning($"unsuccessful password reset for user with username: {user.UserName}");
+                return BadRequest(res.Errors);
+            }
+
+            _logger.LogInformation($"Successful password reset for user with username: {user.UserName}");
+            return Ok("Password changed successfully");
+        }
     }
 }
