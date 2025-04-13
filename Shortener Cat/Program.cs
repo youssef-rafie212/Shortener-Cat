@@ -23,7 +23,7 @@ namespace Shortener_Cat
             var builder = WebApplication.CreateBuilder(args);
 
             // Serilog
-            Log.Logger = new LoggerConfiguration().WriteTo.File("Logs/log.txt").CreateLogger();
+            Log.Logger = new LoggerConfiguration().WriteTo.File("Logs/log.txt").WriteTo.Console().CreateLogger();
             builder.Logging.ClearProviders();
             builder.Logging.AddProvider(new SerilogLoggerProvider(Log.Logger));
 
