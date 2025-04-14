@@ -10,7 +10,9 @@ using System.Security.Claims;
 namespace Shortener_Cat.Controllers.v1
 {
     [ApiVersion("1.0")]
-    public class AuthenticationController : AppBaseController
+    [ApiController]
+    [Route("api/v{version:apiVersion}/authentication")]
+    public class AuthenticationController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;

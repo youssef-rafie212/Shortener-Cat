@@ -9,8 +9,9 @@ using Shortener_Cat.Filters;
 namespace Shortener_Cat.Controllers.v1
 {
     [ApiVersion("1.0")]
+    [ApiController]
     [Route("api/v{version:apiVersion}/google-auth")]
-    public class GoogleAuthController : AppBaseController
+    public class GoogleAuthController : ControllerBase
     {
         private readonly IGoogleAuthService _authService;
         private readonly UserManager<ApplicationUser> _userManager;

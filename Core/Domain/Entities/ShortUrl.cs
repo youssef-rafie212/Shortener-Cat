@@ -16,9 +16,9 @@ namespace Core.Domain.Entities
 
         public bool IsActive { get; set; } = true;
 
-        public DateTime ExpiresAt { get; set; }
+        public DateTime ExpiresAt { get; set; } = DateTime.UtcNow.AddDays(30);
 
-        public int VisitCount { get; set; }
+        public int VisitCount { get; set; } = 0;
 
         public int MaxVisit { get; set; } = 10000;
 

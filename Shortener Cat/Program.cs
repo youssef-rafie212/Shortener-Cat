@@ -3,6 +3,7 @@ using Core.Domain.RepositoryContracts;
 using Core.Services;
 using Core.ServicesContracts;
 using Infrastructure.DB;
+using Infrastructure.Externals;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -117,8 +118,13 @@ namespace Shortener_Cat
             // Custom
             builder.Services.AddScoped<IJwtService, JwtService>();
             builder.Services.AddScoped<IExpiredTokensRepo, ExpiredTokensRepo>();
+            builder.Services.AddScoped<IShortUrlsRepo, ShortUrlsRepo>();
             builder.Services.AddScoped<IGoogleAuthService, GoogleAuthService>();
             builder.Services.AddScoped<BlackListTokenFilter>();
+            builder.Services.AddScoped<IEmailSender, MailTrapSender>();
+            builder.Services.AddScoped<IShortenerService, ShortenerService>();
+            builder.Services.AddScoped<IShortUrlService, ShortUrlService>();
+            builder.Services.AddHttpContextAccessor();
 
             builder.Services.Configure<IdentityOptions>(opt =>
             {
