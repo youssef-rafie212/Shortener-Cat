@@ -23,6 +23,12 @@ namespace Shortener_Cat
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Redis
+            builder.Services.AddStackExchangeRedisCache(opt =>
+            {
+                opt.Configuration = builder.Configuration.GetConnectionString("Redis");
+            });
+
             // Serilog
             Log.Logger = new LoggerConfiguration().WriteTo.File("Logs/log.txt").WriteTo.Console().CreateLogger();
             builder.Logging.ClearProviders();
