@@ -43,7 +43,7 @@ namespace Infrastructure.Repositories
             return await _db.ShortUrls.Where(u => u.UserId == userId && u.ExpiresAt > DateTime.UtcNow).ToListAsync();
         }
 
-        public async Task<ShortUrl?> GetOne(int id)
+        public async Task<ShortUrl?> GetOneById(int id)
         {
             ShortUrl? res = await _db.ShortUrls.Include("User").FirstOrDefaultAsync(u => u.Id == id && u.ExpiresAt > DateTime.UtcNow);
             return res;

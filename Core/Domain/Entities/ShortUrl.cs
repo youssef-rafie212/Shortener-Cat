@@ -8,6 +8,8 @@ namespace Core.Domain.Entities
         [Key]
         public int Id { get; set; }
 
+        public string Code { get; set; }
+
         public string Value { get; set; } = string.Empty;
 
         public string OriginalUrl { get; set; } = string.Empty;

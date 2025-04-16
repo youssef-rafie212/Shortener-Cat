@@ -37,6 +37,7 @@ namespace Core.Services
             {
                 ShortUrl target = await GetById(id);
                 await _repo.Activate(target);
+                await _cache.SetStringAsync(id.ToString(), JsonSerializer.Serialize(target));
             }
             catch (Exception ex)
             {
@@ -65,6 +66,7 @@ namespace Core.Services
             string host = _contextAccessor.HttpContext!.Request.Host.ToString();
             string value = $"{protocol}://{host}/{code}";
 
+            shortUrl.Code = code;
             shortUrl.Value = value;
             await _repo.UpdateOne(shortUrl, shortUrl);
 
@@ -84,6 +86,7 @@ namespace Core.Services
             {
                 ShortUrl target = await GetById(id);
                 await _repo.Deactivate(target);
+                await _cache.SetStringAsync(id.ToString(), JsonSerializer.Serialize(target));
             }
             catch (Exception ex)
             {
@@ -118,7 +121,7 @@ namespace Core.Services
                 return JsonSerializer.Deserialize<ShortUrl>(cahcedRes)!;
             }
 
-            ShortUrl? res = await _repo.GetOne(id);
+            ShortUrl? res = await _repo.GetOneById(id);
             if (res == null) throw new Exception("No URL with the given ID");
 
             var cacheEntryOpts = new DistributedCacheEntryOptions()
@@ -136,7 +139,9 @@ namespace Core.Services
             try
             {
                 ShortUrl target = await GetById(id);
-                return await _repo.UpdateOne(target, newShortUrl);
+                ShortUrl res = await _repo.UpdateOne(target, newShortUrl);
+                await _cache.SetStringAsync(id.ToString(), JsonSerializer.Serialize(res));
+                return res;
             }
             catch (Exception ex)
             {
