@@ -53,6 +53,7 @@ namespace Infrastructure.Repositories
         {
             oldShortUrl.OriginalUrl = newShortUrl.OriginalUrl;
             oldShortUrl.Value = newShortUrl.Value;
+            oldShortUrl.Code = newShortUrl.Code;
             oldShortUrl.VisitCount = newShortUrl.VisitCount;
             await _db.SaveChangesAsync();
             return oldShortUrl;

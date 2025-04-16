@@ -3,6 +3,7 @@ using System;
 using Infrastructure.DB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250416090942_UrlVisit")]
+    partial class UrlVisit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,22 +192,25 @@ namespace Infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Country")
-                        .HasColumnType("text");
-
-                    b.Property<string>("DeviceType")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("DeviceType")
+                        .HasColumnType("integer");
+
                     b.Property<string>("IPAddress")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Referrer")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("ShortUrlId")
                         .HasColumnType("integer");
 
                     b.Property<string>("UserAgent")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("VisitedAt")

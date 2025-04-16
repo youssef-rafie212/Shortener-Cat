@@ -1,4 +1,4 @@
-﻿namespace Core.Domain.Entities
+﻿namespace Core.ServicesContracts
 {
     public interface IShortenerService
     {

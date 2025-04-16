@@ -1,5 +1,4 @@
-﻿using Core.Domain.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Domain.Entities
@@ -9,21 +8,21 @@ namespace Core.Domain.Entities
         [Key]
         public int Id { get; set; }
 
-        DateTime VisitedAt { get; set; } = DateTime.UtcNow;
+        public DateTime VisitedAt { get; set; } = DateTime.UtcNow;
 
-        string IPAddress { get; set; } = string.Empty;
+        public string? IPAddress { get; set; } = string.Empty;
 
-        string Country { get; set; } = string.Empty;
+        public string? Country { get; set; } = string.Empty;
 
-        DeviceType DeviceType { get; set; }
+        public string DeviceType { get; set; } = string.Empty;
 
-        string Referrer { get; set; } = string.Empty;
+        public string? Referrer { get; set; } = string.Empty;
 
-        string UserAgent { get; set; } = string.Empty;
+        public string? UserAgent { get; set; } = string.Empty;
 
         [ForeignKey("ShortUrl")]
-        int ShortUrlId { get; set; }
+        public int ShortUrlId { get; set; }
 
-        ShortUrl ShortUrl { get; set; }
+        public ShortUrl ShortUrl { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Core.Domain.Entities;
+﻿using Core.ServicesContracts;
 using System.Text;
 
 namespace Core.Services

@@ -9,6 +9,9 @@ namespace Core.DTO
         public string NewValue { get; set; }
 
         [Required]
+        public string Code { get; set; }
+
+        [Required]
         [Url]
         public string NewOriginalUrl { get; set; }
 

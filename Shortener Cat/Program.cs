@@ -121,6 +121,12 @@ namespace Shortener_Cat
                 });
             });
 
+            // Context accessor
+            builder.Services.AddHttpContextAccessor();
+
+            // Device detection
+            builder.Services.AddDetection();
+
             // Custom
             builder.Services.AddScoped<IJwtService, JwtService>();
             builder.Services.AddScoped<IExpiredTokensRepo, ExpiredTokensRepo>();
@@ -130,7 +136,8 @@ namespace Shortener_Cat
             builder.Services.AddScoped<IEmailSender, MailTrapSender>();
             builder.Services.AddScoped<IShortenerService, ShortenerService>();
             builder.Services.AddScoped<IShortUrlService, ShortUrlService>();
-            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddScoped<IUrlVisitsRepo, UrlVisitsRepo>();
+            builder.Services.AddScoped<IUrlVisitService, UrlVisitService>();
 
             builder.Services.Configure<IdentityOptions>(opt =>
             {
