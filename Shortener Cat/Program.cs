@@ -138,6 +138,8 @@ namespace Shortener_Cat
             builder.Services.AddScoped<IShortUrlService, ShortUrlService>();
             builder.Services.AddScoped<IUrlVisitsRepo, UrlVisitsRepo>();
             builder.Services.AddScoped<IUrlVisitService, UrlVisitService>();
+            builder.Services.AddScoped<IAnalyticsRepo, AnalyticsRepo>();
+            builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 
             builder.Services.Configure<IdentityOptions>(opt =>
             {

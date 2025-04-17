@@ -33,16 +33,10 @@ namespace Core.Services
 
         public async Task Activate(int id)
         {
-            try
-            {
-                ShortUrl target = await GetById(id);
-                await _repo.Activate(target);
-                await _cache.SetStringAsync(id.ToString(), JsonSerializer.Serialize(target));
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            ShortUrl? target = await _repo.GetOneById(id);
+            if (target == null) throw new Exception("URL does not exist");
+            await _repo.Activate(target);
+            await _cache.SetStringAsync(id.ToString(), JsonSerializer.Serialize(target));
         }
 
         public async Task<ShortUrl> CreateShortUrl(int userId, string originalUrl)
@@ -82,30 +76,18 @@ namespace Core.Services
 
         public async Task Deactivate(int id)
         {
-            try
-            {
-                ShortUrl target = await GetById(id);
-                await _repo.Deactivate(target);
-                await _cache.SetStringAsync(id.ToString(), JsonSerializer.Serialize(target));
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            ShortUrl? target = await _repo.GetOneById(id);
+            if (target == null) throw new Exception("URL does not exist");
+            await _repo.Deactivate(target);
+            await _cache.SetStringAsync(id.ToString(), JsonSerializer.Serialize(target));
         }
 
         public async Task DeleteById(int id)
         {
-            try
-            {
-                ShortUrl target = await GetById(id);
-                await _repo.DeleteOne(target);
-                await _cache.RemoveAsync(id.ToString());
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            ShortUrl? target = await _repo.GetOneById(id);
+            if (target == null) throw new Exception("URL does not exist");
+            await _repo.DeleteOne(target);
+            await _cache.RemoveAsync(id.ToString());
         }
 
         public async Task<List<ShortUrl>> GetAllShortUrlsForUser(int userId)
@@ -122,7 +104,7 @@ namespace Core.Services
             }
 
             ShortUrl? res = await _repo.GetOneById(id);
-            if (res == null) throw new Exception("No URL with the given ID");
+            if (res == null) throw new Exception("URL does not exist");
 
             var cacheEntryOpts = new DistributedCacheEntryOptions()
             {
@@ -136,17 +118,11 @@ namespace Core.Services
 
         public async Task<ShortUrl> UpdateById(int id, ShortUrl newShortUrl)
         {
-            try
-            {
-                ShortUrl target = await GetById(id);
-                ShortUrl res = await _repo.UpdateOne(target, newShortUrl);
-                await _cache.SetStringAsync(id.ToString(), JsonSerializer.Serialize(res));
-                return res;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            ShortUrl? target = await _repo.GetOneById(id);
+            if (target == null) throw new Exception("URL does not exist");
+            ShortUrl res = await _repo.UpdateOne(target, newShortUrl);
+            await _cache.SetStringAsync(id.ToString(), JsonSerializer.Serialize(res));
+            return res;
         }
     }
 }
