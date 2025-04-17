@@ -78,24 +78,41 @@ namespace Infrastructure.Repositories
             return res;
         }
 
-        public Task<VisitsByCountryDto?> GetVisitsByCountry(int urlId)
+        public async Task<List<VisitsByCountryDto>> GetVisitsByCountry(int urlId)
         {
-            throw new NotImplementedException();
+            var res = await _db.UrlVisits.
+                Where(v => v.ShortUrlId == urlId).
+                GroupBy(v => v.Country).
+                Select(g => new VisitsByCountryDto()
+                {
+                    Country = g.Key ?? "Uknown",
+                    Count = g.Count(),
+                    Visits = g.ToList()
+                }).ToListAsync();
+
+            return res;
         }
 
-        public Task<VisitsByDeviceDto?> GetVisitsByDevice(int urlId)
+        public async Task<List<VisitsByDeviceDto>> GetVisitsByDevice(int urlId)
         {
-            throw new NotImplementedException();
+            var res = await _db.UrlVisits.
+                Where(v => v.ShortUrlId == urlId).
+                GroupBy(v => v.DeviceType).
+                Select(g => new VisitsByDeviceDto()
+                {
+                    Device = g.Key,
+                    Count = g.Count(),
+                    Visits = g.ToList()
+                }).ToListAsync();
+
+            return res;
         }
 
-        public Task<TotalVisitsDto?> GetVisitsForUrl(int urlId)
+        public async Task<TotalVisitsDto> GetVisitsForUrl(int urlId)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<TotalVisitsForMultipleDto?> GetVisitsForUsersUrls(int userId)
-        {
-            throw new NotImplementedException();
+            var visits = await _db.UrlVisits.Where(v => v.ShortUrlId == urlId).ToListAsync();
+            TotalVisitsDto totalVisits = new() { Count = visits.Count, Visits = visits };
+            return totalVisits;
         }
     }
 }

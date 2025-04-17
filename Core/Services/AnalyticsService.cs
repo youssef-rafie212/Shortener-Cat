@@ -29,24 +29,19 @@ namespace Core.Services
             return await _repo.GetMaxVisitsForUserUrls(userId);
         }
 
-        public Task<VisitsByCountryDto?> GetVisitsByCountry(int urlId)
+        public async Task<List<VisitsByCountryDto>> GetVisitsByCountry(int urlId)
         {
-            throw new NotImplementedException();
+            return await _repo.GetVisitsByCountry(urlId);
         }
 
-        public Task<VisitsByDeviceDto?> GetVisitsByDevice(int urlId)
+        public async Task<List<VisitsByDeviceDto>> GetVisitsByDevice(int urlId)
         {
-            throw new NotImplementedException();
+            return await _repo.GetVisitsByDevice(urlId);
         }
 
-        public Task<TotalVisitsDto?> GetVisitsForUrl(int urlId)
+        public async Task<TotalVisitsDto> GetVisitsForUrl(int urlId)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<TotalVisitsForMultipleDto?> GetVisitsForUsersUrls(int userId)
-        {
-            throw new NotImplementedException();
+            return await _repo.GetVisitsForUrl(urlId);
         }
     }
 }

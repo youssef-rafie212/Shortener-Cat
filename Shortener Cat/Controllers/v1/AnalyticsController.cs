@@ -51,5 +51,35 @@ namespace Shortener_Cat.Controllers.v1
             if (res == null) return BadRequest("User has no URLs or URLs have no visits yet");
             return Ok(res);
         }
+
+        [HttpGet]
+        [Route("visits-by-country/{urlId:int}")]
+        [Authorize]
+        [ServiceFilter(typeof(BlackListTokenFilter))]
+        public async Task<IActionResult> GetVisitsByCountry(int urlId)
+        {
+            var res = await _analyticsService.GetVisitsByCountry(urlId);
+            return Ok(res);
+        }
+
+        [HttpGet]
+        [Route("visits-by-device/{urlId:int}")]
+        [Authorize]
+        [ServiceFilter(typeof(BlackListTokenFilter))]
+        public async Task<IActionResult> GetVisitsByDevice(int urlId)
+        {
+            var res = await _analyticsService.GetVisitsByDevice(urlId);
+            return Ok(res);
+        }
+
+        [HttpGet]
+        [Route("visits/{urlId:int}")]
+        [Authorize]
+        [ServiceFilter(typeof(BlackListTokenFilter))]
+        public async Task<IActionResult> GetVisits(int urlId)
+        {
+            var res = await _analyticsService.GetVisitsForUrl(urlId);
+            return Ok(res);
+        }
     }
 }
