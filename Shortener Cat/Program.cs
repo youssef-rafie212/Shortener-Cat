@@ -2,6 +2,8 @@ using Core.Domain.Entities;
 using Core.Domain.RepositoryContracts;
 using Core.Services;
 using Core.ServicesContracts;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Infrastructure.DB;
 using Infrastructure.Externals;
 using Infrastructure.Repositories;
@@ -127,6 +129,12 @@ namespace Shortener_Cat
             // Device detection
             builder.Services.AddDetection();
 
+            // Firebase 
+            FirebaseApp.Create(new AppOptions()
+            {
+                Credential = GoogleCredential.FromFile("shortenerfb.json")
+            });
+
             // Custom
             builder.Services.AddScoped<IJwtService, JwtService>();
             builder.Services.AddScoped<IExpiredTokensRepo, ExpiredTokensRepo>();
@@ -140,6 +148,8 @@ namespace Shortener_Cat
             builder.Services.AddScoped<IUrlVisitService, UrlVisitService>();
             builder.Services.AddScoped<IAnalyticsRepo, AnalyticsRepo>();
             builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+            builder.Services.AddScoped<IDeviceTokensRepo, DeviceTokensRepo>();
+            builder.Services.AddScoped<IPushNotificationService, FCMNotificationService>();
 
             builder.Services.Configure<IdentityOptions>(opt =>
             {
