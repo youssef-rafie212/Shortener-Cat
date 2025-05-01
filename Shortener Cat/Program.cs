@@ -170,8 +170,10 @@ namespace Shortener_Cat
                 opt.SwaggerEndpoint("v1/swagger.json", "1.0");
             });
 
-
-            app.UseHttpsRedirection();
+            if (!builder.Environment.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
 
             app.UseAuthorization();
 
