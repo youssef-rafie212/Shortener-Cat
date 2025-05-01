@@ -15,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Extensions.Logging;
 using Shortener_Cat.Filters;
+using Shortener_Cat.Middlewares;
 using System.Text;
 
 namespace Shortener_Cat
@@ -161,6 +162,7 @@ namespace Shortener_Cat
 
             var app = builder.Build();
 
+            app.UseGlobalExceptionHandler();
 
             app.UseSwagger();
             app.UseSwaggerUI(opt =>
