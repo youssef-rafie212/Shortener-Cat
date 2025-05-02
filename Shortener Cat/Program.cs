@@ -162,6 +162,13 @@ namespace Shortener_Cat
 
             var app = builder.Build();
 
+            // Auto migrate on startup for docker containers 
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                dbContext.Database.Migrate();
+            }
+
             app.UseGlobalExceptionHandler();
 
             app.UseSwagger();
