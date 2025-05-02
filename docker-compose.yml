@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  api:
+    image: youssef212/shortener-cat:latest
+    ports:
+      - "6969:6969"
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=db;Port=5432;Database=shortenerdb;User Id=postgres;Password=123
+      - ConnectionStrings__Redis=redis:6379
+    depends_on:
+      - db
+      - redis
+  
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=shortenerdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:alpine
+
+volumes:
+  pgdata:
